@@ -16,13 +16,14 @@ The application layer must depend only on this contract.
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
-from sttm.application.services.mapping_orchestrator import (
-    MappingAnalysisResult,
-    MappingRequest,
-    SemanticReasoningResult,
-)
+if TYPE_CHECKING:
+    from sttm.application.services.mapping_orchestrator import (
+        MappingAnalysisResult,
+        MappingRequest,
+        SemanticReasoningResult,
+    )
 
 
 class SemanticReasoningProvider(Protocol):

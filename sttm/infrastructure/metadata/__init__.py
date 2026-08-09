@@ -14,10 +14,12 @@ from .in_memory import (
 from .registry import (
     MetadataExtractorRegistry,
 )
+from .provider import RegistryMetadataProvider
 
 __all__ = [
     "MetadataExtractor",
     "MetadataExtractorProvider",
     "InMemoryMetadataExtractor",
     "MetadataExtractorRegistry",
+    "RegistryMetadataProvider",
 ]

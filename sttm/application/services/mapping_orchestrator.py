@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
 
-from sttm.application.ports.code_generator import CodeGenerator
+from sttm.application.ports.code_generator import CodeGeneratorAgent
 from sttm.application.ports.metadata import MetadataProvider
 from sttm.application.ports.semantic_reasoning import (
     SemanticReasoningProvider,
@@ -96,7 +96,7 @@ class MappingOrchestrator:
         ir_builder: MappingIRBuilder,
         ir_validator: LogicalMappingIRValidator | None = None,
         metadata_provider: MetadataProvider | None = None,
-        code_generator: CodeGenerator | None = None,
+        code_generator: CodeGeneratorAgent | None = None,
     ) -> None:
         """Initialize the orchestrator.
 

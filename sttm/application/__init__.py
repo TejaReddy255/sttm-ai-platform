@@ -25,24 +25,26 @@ It does not expose:
 """
 
 from .services import (
-    AnalysisService,
+    AnalysisProvider,
     MappingAnalysisResult,
     MappingGenerationResult,
     MappingIRBuilder,
     MappingOrchestrator,
     MappingRequest,
     SemanticReasoningResult,
-    SemanticReasoningService,
+    STTMGenerationResult,
+    STTMGenerationService,
 )
 
 __all__ = [
     # Mapping services
-    "AnalysisService",
+    "AnalysisProvider",
     "MappingAnalysisResult",
     "MappingGenerationResult",
     "MappingIRBuilder",
     "MappingOrchestrator",
     "MappingRequest",
     "SemanticReasoningResult",
-    "SemanticReasoningService",
+    "STTMGenerationResult",
+    "STTMGenerationService",
 ]

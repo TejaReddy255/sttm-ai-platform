@@ -593,4 +593,153 @@ class MetadataValidator:
                     report,
                     code="META-CON-001",
                     severity=ValidationSeverity.BLOCKER,
-                    message=
+                    message=(
+                        f"Constraint {constraint.name!r} references unknown "
+                        f"column {column.column_name!r} on table {table.name!r}."
+                    ),
+                    object_type="constraint",
+                    object_name=constraint.name,
+                    path=f"{database.name}.{schema.name}.{table.name}",
+                )
+
+        if constraint.constraint_type != ConstraintType.FOREIGN_KEY:
+            return
+
+        if not constraint.referenced_table or not constraint.referenced_columns:
+            self._add_issue(
+                report,
+                code="META-CON-002",
+                severity=ValidationSeverity.BLOCKER,
+                message=(
+                    f"Foreign key {constraint.name!r} is missing its referenced "
+                    "table or columns."
+                ),
+                object_type="constraint",
+                object_name=constraint.name,
+            )
+            return
+
+        referenced_schema = constraint.referenced_schema or schema.name
+        referenced = next(
+            (
+                candidate
+                for candidate in database.schemas
+                if candidate.name.casefold() == referenced_schema.casefold()
+            ),
+            None,
+        )
+        referenced_table = (
+            referenced.get_table(constraint.referenced_table)
+            if referenced is not None
+            else None
+        )
+        if referenced_table is None:
+            self._add_issue(
+                report,
+                code="META-CON-003",
+                severity=ValidationSeverity.BLOCKER,
+                message=(
+                    f"Foreign key {constraint.name!r} references unknown table "
+                    f"{referenced_schema}.{constraint.referenced_table}."
+                ),
+                object_type="constraint",
+                object_name=constraint.name,
+            )
+            return
+
+        referenced_names = {
+            column.name.casefold()
+            for column in referenced_table.columns
+        }
+        for name in constraint.referenced_columns:
+            if name.casefold() not in referenced_names:
+                self._add_issue(
+                    report,
+                    code="META-CON-004",
+                    severity=ValidationSeverity.BLOCKER,
+                    message=(
+                        f"Foreign key {constraint.name!r} references unknown "
+                        f"column {name!r} on table {referenced_table.name!r}."
+                    ),
+                    object_type="constraint",
+                    object_name=constraint.name,
+                )
+
+    def _validate_indexes(
+        self,
+        table: TableModel,
+        report: MetadataValidationReport,
+    ) -> None:
+        """Validate index column references."""
+        known_columns = {column.name.casefold() for column in table.columns}
+        for index in table.indexes:
+            for index_column in index.columns:
+                if index_column.column_name.casefold() not in known_columns:
+                    self._add_issue(
+                        report,
+                        code="META-IDX-001",
+                        severity=ValidationSeverity.BLOCKER,
+                        message=(
+                            f"Index {index.name!r} references unknown column "
+                            f"{index_column.column_name!r} on table {table.name!r}."
+                        ),
+                        object_type="index",
+                        object_name=index.name,
+                        path=table.name,
+                    )
+
+    def _validate_identifier(
+        self,
+        *,
+        value: str,
+        object_type: str,
+        object_name: str,
+        path: str,
+        report: MetadataValidationReport,
+    ) -> None:
+        """Warn on names that may need quoted identifiers downstream."""
+        import re
+
+        if not re.match(self._VALID_IDENTIFIER_PATTERN, value):
+            self._add_issue(
+                report,
+                code="META-NAME-001",
+                severity=ValidationSeverity.WARNING,
+                message=(
+                    f"{object_type.title()} name {value!r} is not a portable "
+                    "unquoted SQL identifier."
+                ),
+                object_type=object_type,
+                object_name=object_name,
+                path=path,
+            )
+
+    @staticmethod
+    def _add_issue(
+        report: MetadataValidationReport,
+        *,
+        code: str,
+        severity: ValidationSeverity,
+        message: str,
+        object_type: str | None = None,
+        object_name: str | None = None,
+        path: str | None = None,
+    ) -> None:
+        """Append a structured validation issue."""
+        report.issues.append(
+            MetadataValidationIssue(
+                code=code,
+                severity=severity,
+                message=message,
+                object_type=object_type,
+                object_name=object_name,
+                path=path,
+            ),
+        )
+
+
+__all__ = [
+    "MetadataValidationIssue",
+    "MetadataValidationReport",
+    "MetadataValidator",
+]

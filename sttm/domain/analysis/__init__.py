@@ -19,7 +19,7 @@ from .cardinality import (
     CardinalityGraph,
 )
 
-from .candidate_path import (
+from .candidate import (
     CandidatePath,
     CandidatePathScore,
     CandidatePathSet,

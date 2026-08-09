@@ -12,23 +12,24 @@ They do not contain:
 """
 
 from .mapping_orchestrator import (
-    AnalysisService,
+    AnalysisProvider,
     MappingAnalysisResult,
     MappingGenerationResult,
     MappingIRBuilder,
     MappingOrchestrator,
     MappingRequest,
     SemanticReasoningResult,
-    SemanticReasoningService,
 )
+from .sttm_generation import STTMGenerationResult, STTMGenerationService
 
 __all__ = [
-    "AnalysisService",
+    "AnalysisProvider",
     "MappingAnalysisResult",
     "MappingGenerationResult",
     "MappingIRBuilder",
     "MappingOrchestrator",
     "MappingRequest",
     "SemanticReasoningResult",
-    "SemanticReasoningService",
+    "STTMGenerationResult",
+    "STTMGenerationService",
 ]

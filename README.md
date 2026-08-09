@@ -4,6 +4,18 @@ An enterprise-oriented AI-assisted Source-to-Target Mapping (STTM) platform that
 
 The platform sits between an upstream metadata extraction system and a downstream code-generation system.
 
+## Run the mapping workbench
+
+After creating a virtual environment and installing the project dependencies, start the Streamlit UI:
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run sttm\ui\app.py
+```
+
+The workbench supports an approved `LogicalMappingIR` JSON upload, deterministic
+STTM compilation, artifact download, and SQL/dbt generation. Use **Load guided demo**
+to explore the complete workflow without connecting a source system.
+
 ---
 
 ## 1. System Context

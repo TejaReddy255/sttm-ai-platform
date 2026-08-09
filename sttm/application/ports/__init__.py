@@ -11,16 +11,18 @@ Downstream:
 """
 
 from .code_generator import (
-    CodeGenerator,
-    GeneratedArtifact,
+    CodeGeneratorAgent,
+    GeneratedCode,
 )
 
 from .metadata import (
     MetadataProvider,
 )
+from .sttm_compiler import STTMCompilerPort
 
 __all__ = [
-    "CodeGenerator",
-    "GeneratedArtifact",
+    "CodeGeneratorAgent",
+    "GeneratedCode",
     "MetadataProvider",
+    "STTMCompilerPort",
 ]
