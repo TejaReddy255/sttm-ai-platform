@@ -31,7 +31,14 @@ from .models import (
     LogicalMappingIR,
 )
 
+from .validation import (
+    IRValidationFinding,
+    IRValidationResult,
+    LogicalMappingIRValidator,
+)
+
 __all__ = [
+    # IR models
     "IRColumnReference",
     "IRConfidence",
     "IRExpressionOperator",
@@ -46,4 +53,9 @@ __all__ = [
     "IRValidationSeverity",
     "LogicalMapping",
     "LogicalMappingIR",
+
+    # IR validation
+    "IRValidationFinding",
+    "IRValidationResult",
+    "LogicalMappingIRValidator",
 ]
