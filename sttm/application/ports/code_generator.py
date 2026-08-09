@@ -1,42 +1,48 @@
-"""Code-generation application port."""
+"""Application port for the downstream Code Generator Agent."""
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Protocol
 
-from sttm.domain.ir import LogicalMappingIR
+from sttm.domain.sttm import STTMDocument
 
 
-class GeneratedArtifact:
-    """Generated downstream artifact.
+@dataclass(frozen=True)
+class GeneratedCode:
+    """Code produced by the Code Generator Agent.
 
-    Concrete generators can extend this contract later with
-    artifact-specific metadata.
+    Attributes:
+        language: Target implementation language.
+        filename: Suggested output filename.
+        content: Generated source code.
+        explanation: Agent-generated explanation of the implementation.
     """
 
-    def __init__(
-        self,
-        *,
-        artifact_type: str,
-        filename: str,
-        content: str,
-    ) -> None:
-        self.artifact_type = artifact_type
-        self.filename = filename
-        self.content = content
+    language: str
+    filename: str
+    content: str
+    explanation: str | None = None
 
 
-class CodeGenerator(Protocol):
-    """Port implemented by downstream code generators.
+class CodeGeneratorAgent(Protocol):
+    """Port implemented by the downstream AI code-generation agent.
 
-    The generator receives ONLY validated Logical Mapping IR.
+    Input:
+        STTMDocument
 
-    It must not perform semantic reasoning or metadata discovery.
+    Output:
+        GeneratedCode
+
+    The implementation may use Gemini/Vertex AI and an agentic
+    workflow, but those dependencies must not leak into the
+    application or domain layers.
     """
 
     def generate(
         self,
-        ir: LogicalMappingIR,
-    ) -> GeneratedArtifact:
-        """Generate an artifact from Logical Mapping IR."""
+        sttm: STTMDocument,
+        target_language: str,
+    ) -> GeneratedCode:
+        """Generate implementation code from STTM."""
         ...
